@@ -9,7 +9,7 @@ public class DistanceFogController : MonoBehaviour
     [Header("Fog")]
     public Shader distanceFogShader;
     [Header("Variables")]
-    public Color fogColor;
+    public Color fogColor = new Color(0.64f, 0.64f, 0.64f);
     public enum FogModes { Linear, Exponential, ExponentialSquared}
     public FogModes fogMode = FogModes.Linear;
 
