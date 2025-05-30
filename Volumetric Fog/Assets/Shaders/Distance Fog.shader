@@ -27,7 +27,10 @@ Shader "_MyShaders/Distance Fog"
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
+            sampler2D _MainTex, _CameraDepthTexture;
+            
+            float _FogStart, _FogEnd;
+            
             float4 _FogColor;
 
             v2f vert (appdata v)
@@ -40,11 +43,21 @@ Shader "_MyShaders/Distance Fog"
                 return o;
             }
 
+            void ApplyFog()
+            {
+            
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
+                float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
+                depth = Linear01Depth(depth);
+                float viewDist = depth * _ProjectionParams.z;
 
-                float4 output = col * _FogColor;
+                float fogFactor = (_FogEnd - depth) / (_FogEnd - _FogStart);
+
+                float4 output = lerp(_FogColor, col, saturate(fogFactor));
 
                 return output;
             }
