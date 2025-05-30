@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'defined EXPONENTIAL' with 'defined (EXPONENTIAL)'
-
 Shader "_MyShaders/Distance Fog"
 {
     Properties

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 [ExecuteInEditMode]
-public class FogController : MonoBehaviour
+public class DistanceFogController : MonoBehaviour
 {
     [Header("Fog")]
     public Shader distanceFogShader;
@@ -13,16 +13,16 @@ public class FogController : MonoBehaviour
     public enum FogModes { Linear, Exponential, ExponentialSquared}
     public FogModes fogMode = FogModes.Linear;
 
-    public float fogStart = 0;
-    public float fogEnd = 1;
+    public float fogStart = 0f;
+    public float fogEnd = 15f;
     [Range(0.0f, 1.0f)]
-    public float fogDensity = 1;
+    public float fogDensity = 0.1f;
 
     private Material distanceFogMat;
 
     private void OnEnable()
     {
-        if (distanceFogMat == null)
+        if (distanceFogMat == null && distanceFogShader != null)
         {
             distanceFogMat = new Material(distanceFogShader);
             distanceFogMat.hideFlags = HideFlags.HideAndDontSave;
@@ -34,14 +34,22 @@ public class FogController : MonoBehaviour
     }
     private void OnRenderImage(RenderTexture _source, RenderTexture _destination)
     {
-        distanceFogMat.SetFloat("_FogStart", fogStart);
-        distanceFogMat.SetFloat("_FogEnd", fogEnd);
-        distanceFogMat.SetFloat("_FogDensity", fogDensity);
-        distanceFogMat.SetVector("_FogColor", fogColor);
-        SetKeyword(distanceFogMat, "EXPONENTIAL", fogMode == FogModes.Exponential);
-        SetKeyword(distanceFogMat, "EXPONENTIAL_SQRD", fogMode == FogModes.ExponentialSquared);
+        if(distanceFogMat != null)
+        {
+            distanceFogMat.SetFloat("_FogStart", fogStart);
+            distanceFogMat.SetFloat("_FogEnd", fogEnd);
+            distanceFogMat.SetFloat("_FogDensity", fogDensity);
+            distanceFogMat.SetVector("_FogColor", fogColor);
+            SetKeyword(distanceFogMat, "EXPONENTIAL", fogMode == FogModes.Exponential);
+            SetKeyword(distanceFogMat, "EXPONENTIAL_SQRD", fogMode == FogModes.ExponentialSquared);
 
-        Graphics.Blit(_source, _destination, distanceFogMat);
+            Graphics.Blit(_source, _destination, distanceFogMat);
+        }
+        else
+        {
+            Graphics.Blit(_source, _destination);
+            Debug.LogError("distanceFogMat is null");
+        }
     }
 
     void SetKeyword(Material _mat, string _keyword, bool _state)
