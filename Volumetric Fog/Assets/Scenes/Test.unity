@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 0
   m_FogColor: {r: 0, g: 0, b: 0, a: 1}
   m_FogMode: 2
-  m_FogDensity: 0.5
+  m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 15.01
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -325,10 +325,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceFogShader: {fileID: 4800000, guid: d94f6a304ae3f194daff69c6db2bfb2b, type: 3}
   fogColor: {r: 0.64, g: 0.64, b: 0.64, a: 1}
-  fogMode: 0
+  fogMode: 1
   fogStart: 0
   fogEnd: 80
-  fogDensity: 0.009
+  fogDensity: 0.014
 --- !u!114 &19513186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,10 +343,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightFogShader: {fileID: 4800000, guid: b547fbbef0e9eb342aa977b1ffcad219, type: 3}
   fogColor: {r: 0.64, g: 0.64, b: 0.64, a: 1}
-  fogMode: 0
-  fogStart: -15
-  fogEnd: -6
-  fogDensity: 0.1
+  fogMode: 2
+  fogStart: -22
+  fogEnd: -15
+  fogDensity: 1
 --- !u!1 &154255954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,7 +1077,7 @@ Transform:
   m_GameObject: {fileID: 873574442}
   serializedVersion: 2
   m_LocalRotation: {x: -0.09189847, y: 0.704064, z: 0.092691906, w: 0.69803774}
-  m_LocalPosition: {x: 23.999105, y: -12.8, z: 37.593475}
+  m_LocalPosition: {x: 23.999105, y: -26.2, z: 37.593475}
   m_LocalScale: {x: 15, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []

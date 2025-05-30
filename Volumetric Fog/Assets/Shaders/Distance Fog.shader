@@ -55,7 +55,7 @@ Shader "_MyShaders/Distance Fog"
                 #if defined(EXPONENTIAL)
                     fogFactor *= 1.5;
                     fogFactor = exp2(-fogFactor);
-                #elif(EXPONENTIAL_SQRD)
+                #elif defined(EXPONENTIAL_SQRD)
                     fogFactor *= 1.25;
                     fogFactor = exp2(-pow(fogFactor, 2));
                 #else
