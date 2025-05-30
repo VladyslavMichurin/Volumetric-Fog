@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'defined EXPONENTIAL' with 'defined (EXPONENTIAL)'
+
 Shader "_MyShaders/Distance Fog"
 {
     Properties
@@ -12,6 +14,8 @@ Shader "_MyShaders/Distance Fog"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+
+            #pragma multi_compile _ EXPONENTIAL EXPONENTIAL_SQRD
 
             #include "UnityCG.cginc"
 
@@ -29,7 +33,7 @@ Shader "_MyShaders/Distance Fog"
 
             sampler2D _MainTex, _CameraDepthTexture;
             
-            float _FogStart, _FogEnd;
+            float _FogStart, _FogEnd, _FogDensity;
             
             float4 _FogColor;
 
@@ -43,19 +47,22 @@ Shader "_MyShaders/Distance Fog"
                 return o;
             }
 
-            void ApplyFog()
-            {
-            
-            }
-
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
-                depth = Linear01Depth(depth);
-                float viewDist = depth * _ProjectionParams.z;
+                float viewDist = Linear01Depth(depth) * _ProjectionParams.z;
 
-                float fogFactor = (_FogEnd - depth) / (_FogEnd - _FogStart);
+                float fogFactor = viewDist * _FogDensity;
+                #if defined(EXPONENTIAL)
+                    fogFactor *= 1.5;
+                    fogFactor = exp2(-fogFactor);
+                #elif(EXPONENTIAL_SQRD)
+                    fogFactor *= 1.25;
+                    fogFactor = exp2(-pow(fogFactor, 2));
+                #else
+                    fogFactor = (_FogEnd - viewDist) / max(0.01, _FogEnd - _FogStart);
+                #endif
 
                 float4 output = lerp(_FogColor, col, saturate(fogFactor));
 

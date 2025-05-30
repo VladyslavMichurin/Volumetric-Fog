@@ -323,9 +323,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceFogShader: {fileID: 4800000, guid: d94f6a304ae3f194daff69c6db2bfb2b, type: 3}
-  fogColor: {r: 0, g: 0, b: 0, a: 1}
-  fogStart: 0.2
-  fogEnd: 0.25
+  fogColor: {r: 1, g: 0.11738891, b: 0, a: 1}
+  fogMode: 0
+  fogStart: 0.035
+  fogEnd: 0.035
+  fogDensity: 1
 --- !u!1001 &2041583433
 PrefabInstance:
   m_ObjectHideFlags: 0
