@@ -328,7 +328,7 @@ MonoBehaviour:
   fogMode: 1
   fogStart: 0
   fogEnd: 80
-  fogDensity: 0.015
+  fogDensity: 0.03
 --- !u!114 &19513186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,7 +346,7 @@ MonoBehaviour:
   fogMode: 1
   fogStart: -15
   fogEnd: -10
-  fogDensity: 0.35
+  fogDensity: 0.15
 --- !u!1 &154255954
 GameObject:
   m_ObjectHideFlags: 0
