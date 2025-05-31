@@ -318,7 +318,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19513181}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42ceb1018cce0a14890c3c67d7dad119, type: 3}
   m_Name: 
@@ -328,7 +328,7 @@ MonoBehaviour:
   fogMode: 1
   fogStart: 0
   fogEnd: 80
-  fogDensity: 0.014
+  fogDensity: 0.015
 --- !u!114 &19513186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,10 +343,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightFogShader: {fileID: 4800000, guid: b547fbbef0e9eb342aa977b1ffcad219, type: 3}
   fogColor: {r: 0.64, g: 0.64, b: 0.64, a: 1}
-  fogMode: 2
-  fogStart: -22
-  fogEnd: -15
-  fogDensity: 1
+  fogMode: 1
+  fogStart: -15
+  fogEnd: -10
+  fogDensity: 0.35
 --- !u!1 &154255954
 GameObject:
   m_ObjectHideFlags: 0

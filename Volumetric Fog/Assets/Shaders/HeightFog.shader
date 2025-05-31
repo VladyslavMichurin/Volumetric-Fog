@@ -72,11 +72,10 @@ Shader "Unlit/HeightFog"
                 float4 worldSpacePos = mul(unity_CameraToWorld, viewSpacePos);
 
                 float fogFactor = 1;
-                float heightDifference = max(0,_FogStart - worldSpacePos.y);
+                float heightDifference = max(0,_FogEnd - worldSpacePos.y);
                 #if defined(EXPONENTIAL)
                     fogFactor = exp2(-_FogDensity * heightDifference);
                 #elif defined(EXPONENTIAL_SQRD)
-                    //float hd = max(0, heightDifference);
                     fogFactor = exp2(-pow(_FogDensity * heightDifference, 2));
                 #else
                     fogFactor = (worldSpacePos.y - _FogStart) / max(0.01, _FogEnd - _FogStart);

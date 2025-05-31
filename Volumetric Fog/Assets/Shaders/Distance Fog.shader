@@ -53,13 +53,11 @@ Shader "_MyShaders/Distance Fog"
 
                 float fogFactor = viewDist * _FogDensity;
                 #if defined(EXPONENTIAL)
-                    fogFactor *= 1.5;
                     fogFactor = exp2(-fogFactor);
                 #elif defined(EXPONENTIAL_SQRD)
-                    fogFactor *= 1.25;
                     fogFactor = exp2(-pow(fogFactor, 2));
                 #else
-                    fogFactor = (_FogEnd - viewDist) / max(0.01, _FogEnd - _FogStart);
+                    fogFactor = (_FogStart - viewDist) / max(0.01, _FogStart - _FogEnd);
                 #endif
 
                 float4 output = lerp(_FogColor, col, saturate(fogFactor));

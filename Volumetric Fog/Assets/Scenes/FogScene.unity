@@ -15,11 +15,11 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_FogColor: {r: 1, g: 0, b: 0, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.01
-  m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_LinearFogStart: 105.8
+  m_LinearFogEnd: 105.810005
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -323,11 +324,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceFogShader: {fileID: 4800000, guid: d94f6a304ae3f194daff69c6db2bfb2b, type: 3}
-  fogColor: {r: 1, g: 0.11738891, b: 0, a: 1}
-  fogMode: 0
-  fogStart: 0.035
-  fogEnd: 0.035
-  fogDensity: 1
+  fogColor: {r: 0.6392157, g: 0.6392157, b: 0.6392157, a: 1}
+  fogMode: 2
+  fogStart: 145
+  fogEnd: 100
+  fogDensity: 0.015
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27d2456a3992ca54cb817836cba41053, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heightFogShader: {fileID: 4800000, guid: b547fbbef0e9eb342aa977b1ffcad219, type: 3}
+  fogColor: {r: 0.6392157, g: 0.6392157, b: 0.6392157, a: 1}
+  fogMode: 1
+  fogStart: -1
+  fogEnd: 40.4
+  fogDensity: 0.225
 --- !u!1001 &2041583433
 PrefabInstance:
   m_ObjectHideFlags: 0
