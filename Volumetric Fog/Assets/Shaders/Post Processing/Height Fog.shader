@@ -1,4 +1,4 @@
-Shader "Unlit/HeightFog"
+Shader "_MyShaders/Height Fog"
 {
     Properties
     {
