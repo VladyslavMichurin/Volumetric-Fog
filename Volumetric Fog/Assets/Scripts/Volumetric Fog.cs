@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
+[ExecuteInEditMode, ImageEffectAllowedInSceneView]
 public class VolumetricFog : MonoBehaviour
 {
     [Header("Fog")]
@@ -13,8 +13,8 @@ public class VolumetricFog : MonoBehaviour
     public float fogDensity = 0.1f;
     [Range(1.0f, 1000.0f)]
     public float maxDistance = 100.0f;
-    [Range(1, 64)]
-    public int RaymarchingSteps = 10;
+    [Range(0.01f, 100.0f)]
+    public float stepSize = 1;
 
     private Material volumetricFogMat;
     private Camera cam;
@@ -42,7 +42,7 @@ public class VolumetricFog : MonoBehaviour
             volumetricFogMat.SetFloat("_MaxDistance", maxDistance);
             float half_FOV_Tan = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
             volumetricFogMat.SetFloat("_Half_FOV_Tan", half_FOV_Tan);
-            volumetricFogMat.SetInt("_RaymarchingSteps", RaymarchingSteps);
+            volumetricFogMat.SetFloat("_StepSize", stepSize);
 
             Graphics.Blit(_source, _destination, volumetricFogMat);
         }

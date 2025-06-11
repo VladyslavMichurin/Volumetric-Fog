@@ -33,7 +33,7 @@ Shader "_MyShaders/Volumetric Fog"
             float _FogDensity, _MaxDistance;
 
             float _Half_FOV_Tan;
-            int _RaymarchingSteps;
+            float _StepSize;
 
             v2f vert (appdata v)
             {
@@ -78,10 +78,17 @@ Shader "_MyShaders/Volumetric Fog"
                 float3 rayDir = normalize(viewDir);
 
                 float distLimit = min(viewLenght, _MaxDistance);
-                float distanceTraelled = 0;
+                float distTravelled = 0;
                 float transmittance = 0;
 
-                return transmittance;
+                while(distTravelled < distLimit)
+                {
+                    transmittance += _FogDensity * _StepSize;
+
+                    distTravelled += _StepSize;
+                }
+
+                return lerp(sceneColor, _FogColor, saturate(transmittance));
             }
             ENDCG
         }
