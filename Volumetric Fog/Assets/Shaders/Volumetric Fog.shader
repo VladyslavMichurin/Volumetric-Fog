@@ -79,16 +79,16 @@ Shader "_MyShaders/Volumetric Fog"
 
                 float distLimit = min(viewLenght, _MaxDistance);
                 float distTravelled = 0;
-                float transmittance = 0;
+                float transmittance = 1;
 
                 while(distTravelled < distLimit)
                 {
-                    transmittance += _FogDensity * _StepSize;
+                    transmittance *= exp(-_FogDensity * _StepSize);
 
                     distTravelled += _StepSize;
                 }
 
-                return lerp(sceneColor, _FogColor, saturate(transmittance));
+                return lerp(sceneColor, _FogColor, 1 - saturate(transmittance));
             }
             ENDCG
         }
