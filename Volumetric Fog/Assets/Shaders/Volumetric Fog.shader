@@ -13,7 +13,7 @@ Shader "_MyShaders/Volumetric Fog"
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
+            #include "UnityPBSLighting.cginc"
 
             struct appdata
             {
@@ -30,10 +30,10 @@ Shader "_MyShaders/Volumetric Fog"
             sampler2D _MainTex, _CameraDepthTexture;
 
             float4 _FogColor;
-            float _FogDensity, _MaxDistance;
+            float _FogDensity;
 
             float _Half_FOV_Tan;
-            float _StepSize;
+            int _RaymarchingSteps;
 
             v2f vert (appdata v)
             {
@@ -60,7 +60,24 @@ Shader "_MyShaders/Volumetric Fog"
 
                 return ray;
             }
+            float RaymarchingTransmittance(float3 _startPos, float3 _endPos)
+            {
+                float3 viewDir = _endPos - _startPos;
+                float rayLenght = length(viewDir);
+                float3 rayDir = normalize(viewDir);
 
+                float transmittance = 0;
+                float stepSize = rayLenght / _RaymarchingSteps;
+                float3 currentPos = _startPos;
+                for (int i = 0; i <= _RaymarchingSteps; i++)
+                {
+                    transmittance = _FogDensity * stepSize;
+
+                    currentPos = _startPos + (rayDir * stepSize * i);
+                }
+
+                return saturate(transmittance);
+            }
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -71,24 +88,11 @@ Shader "_MyShaders/Volumetric Fog"
                 float3 ray = ConstructRay(i);
                 float4 viewSpacePos = float4(ray * depth, 1);
                 float4 worldSpacePos = mul(unity_CameraToWorld, viewSpacePos);
-                
-                float3 entry = _WorldSpaceCameraPos;
-                float3 viewDir = worldSpacePos - entry;
-                float viewLenght = length(viewDir);
-                float3 rayDir = normalize(viewDir);
 
-                float distLimit = min(viewLenght, _MaxDistance);
-                float distTravelled = 0;
-                float transmittance = 1;
+                float4 fogColor = _LightColor0;
+                float transmittance = RaymarchingTransmittance(_WorldSpaceCameraPos, worldSpacePos);
 
-                while(distTravelled < distLimit)
-                {
-                    transmittance *= exp(-_FogDensity * _StepSize);
-
-                    distTravelled += _StepSize;
-                }
-
-                return lerp(sceneColor, _FogColor, 1 - saturate(transmittance));
+                return lerp(sceneColor, fogColor, transmittance);
             }
             ENDCG
         }

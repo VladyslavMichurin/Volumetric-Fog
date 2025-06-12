@@ -11,10 +11,8 @@ public class VolumetricFog : MonoBehaviour
     public Color fogColor = new Color(0.64f, 0.64f, 0.64f);
     [Range(0.0f, 1.0f)]
     public float fogDensity = 0.1f;
-    [Range(1.0f, 1000.0f)]
-    public float maxDistance = 100.0f;
-    [Range(0.01f, 100.0f)]
-    public float stepSize = 1;
+    [Range(1, 64)]
+    public int raymarchingSteps = 1;
 
     private Material volumetricFogMat;
     private Camera cam;
@@ -39,10 +37,9 @@ public class VolumetricFog : MonoBehaviour
         {
             volumetricFogMat.SetVector("_FogColor", fogColor);
             volumetricFogMat.SetFloat("_FogDensity", fogDensity);
-            volumetricFogMat.SetFloat("_MaxDistance", maxDistance);
             float half_FOV_Tan = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
             volumetricFogMat.SetFloat("_Half_FOV_Tan", half_FOV_Tan);
-            volumetricFogMat.SetFloat("_StepSize", stepSize);
+            volumetricFogMat.SetInt("_RaymarchingSteps", raymarchingSteps);
 
             Graphics.Blit(_source, _destination, volumetricFogMat);
         }
