@@ -362,8 +362,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumetricFogShader: {fileID: 4800000, guid: a7a89e1495e27fe489760b9b7636068e, type: 3}
   fogColor: {r: 0.3019608, g: 0.4039216, b: 0.60784316, a: 1}
-  fogDensity: 0.05
-  raymarchingSteps: 3
+  fogDensity: 0.02
+  raymarchingSteps: 64
 --- !u!1 &105762234
 GameObject:
   m_ObjectHideFlags: 0

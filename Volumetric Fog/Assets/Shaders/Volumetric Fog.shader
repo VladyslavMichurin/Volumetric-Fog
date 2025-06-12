@@ -60,7 +60,7 @@ Shader "_MyShaders/Volumetric Fog"
 
                 return ray;
             }
-            float RaymarchingTransmittance(float3 _startPos, float3 _endPos)
+            float RaymarchingTransmittance(float3 _startPos, float3 _endPos, inout float4 _fogColor)
             {
                 float3 viewDir = _endPos - _startPos;
                 float rayLenght = length(viewDir);
@@ -71,9 +71,11 @@ Shader "_MyShaders/Volumetric Fog"
                 float3 currentPos = _startPos;
                 for (int i = 0; i <= _RaymarchingSteps; i++)
                 {
-                    transmittance = _FogDensity * stepSize;
+                    transmittance += _FogDensity * stepSize;
 
-                    currentPos = _startPos + (rayDir * stepSize * i);
+                    //_fogColor += _LightColor0;
+
+                    currentPos += rayDir * stepSize;
                 }
 
                 return saturate(transmittance);
@@ -89,8 +91,8 @@ Shader "_MyShaders/Volumetric Fog"
                 float4 viewSpacePos = float4(ray * depth, 1);
                 float4 worldSpacePos = mul(unity_CameraToWorld, viewSpacePos);
 
-                float4 fogColor = _LightColor0;
-                float transmittance = RaymarchingTransmittance(_WorldSpaceCameraPos, worldSpacePos);
+                float4 fogColor = _FogColor;
+                float transmittance = RaymarchingTransmittance(_WorldSpaceCameraPos, worldSpacePos, fogColor);
 
                 return lerp(sceneColor, fogColor, transmittance);
             }
