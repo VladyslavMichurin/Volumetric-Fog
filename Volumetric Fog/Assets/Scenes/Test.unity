@@ -286,7 +286,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: 1
+  m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -362,9 +362,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   volumetricFogShader: {fileID: 4800000, guid: a7a89e1495e27fe489760b9b7636068e, type: 3}
   dirLight: {fileID: 17893445}
-  fogColor: {r: 0, g: 0.09324956, b: 0.3679245, a: 1}
+  fogColor: {r: 0, g: 0, b: 0, a: 1}
   fogDensity: 1
-  raymarchingSteps: 27
+  raymarchingSteps: 30
 --- !u!1 &105762234
 GameObject:
   m_ObjectHideFlags: 0

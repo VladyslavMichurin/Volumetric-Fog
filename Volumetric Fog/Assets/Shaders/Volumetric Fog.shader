@@ -71,35 +71,13 @@ Shader "_MyShaders/Volumetric Fog"
                 float4 zFar = float4(_z < _LightSplitsFar); 
                 return zNear * zFar; 
 			}
-            float4 GetCascadeShadowCoord(float3 _worldPos, fixed4 _cascadeWeights)
-            {
-                float3 sc0 = mul(unity_WorldToShadow[0], _worldPos).xyz;
-                float3 sc1 = mul(unity_WorldToShadow[1], _worldPos).xyz;
-                float3 sc2 = mul(unity_WorldToShadow[2], _worldPos).xyz;
-                float3 sc3 = mul(unity_WorldToShadow[3], _worldPos).xyz;
-                
-                float4 shadowMapCoordinate = float4(sc0 * _cascadeWeights[0] + sc1 * _cascadeWeights[1] + sc2 * _cascadeWeights[2] + sc3 * _cascadeWeights[3], 1);
-                #if defined(UNITY_REVERSED_Z)
-                    float  noCascadeWeights = 1 - dot(_cascadeWeights, float4(1, 1, 1, 1));
-                    shadowMapCoordinate.z += noCascadeWeights;
-                #endif
-                return shadowMapCoordinate;
-            }
-            fixed4 getShadowCoord(float4 worldPos, float4 weights){
+            float4 getShadowCoord(float4 worldPos, float4 weights){
 			    float3 shadowCoord = float3(0,0,0);
 			       
-			    if(weights[0] == 1){
-			        shadowCoord += mul(unity_WorldToShadow[0], worldPos).xyz; 
-			    }
-			    if(weights[1] == 1){
-			        shadowCoord += mul(unity_WorldToShadow[1], worldPos).xyz; 
-			    }
-			    if(weights[2] == 1){
-			        shadowCoord += mul(unity_WorldToShadow[2], worldPos).xyz; 
-			    }
-			    if(weights[3] == 1){
-			        shadowCoord += mul(unity_WorldToShadow[3], worldPos).xyz; 
-			    }
+			    shadowCoord += mul(unity_WorldToShadow[0], worldPos).xyz * weights[0];
+                shadowCoord += mul(unity_WorldToShadow[1], worldPos).xyz * weights[1];
+                shadowCoord += mul(unity_WorldToShadow[2], worldPos).xyz * weights[2];
+                shadowCoord += mul(unity_WorldToShadow[3], worldPos).xyz * weights[3];
 			   
                 return float4(shadowCoord,1);            
 			} 
@@ -108,25 +86,28 @@ Shader "_MyShaders/Volumetric Fog"
                 float3 viewDir = _endPos - _startPos;
                 float rayLenght = length(viewDir);
                 float3 rayDir = normalize(viewDir);
-                float4 cascadeWeights = getCascadeWeights(-_viewPosZ);
+                float4 cascadeWeights = getCascadeWeights(_viewPosZ);
 
-
-                float transmittance = 0;
+                float transmittance = 1;
                 float stepDensity = _FogDensity / _RaymarchingSteps;
                 float stepSize = rayLenght / _RaymarchingSteps;
-                float3 currentPos = _startPos;
+                float3 currentPos = _startPos;            
+
                 for (int i = 0; i <= _RaymarchingSteps; i++)
                 {
-                    float4 shadowCoord = getShadowCoord(float4(currentPos, 1), cascadeWeights);
-                    float mapDepth = tex2D(_MyShadowMap, shadowCoord.xy).r;
-                    //float shadowTerm = shadowCoord.z - bias <= mapDepth ? 1.0 : 0.0;
+                     float4 shadowCoord = getShadowCoord(float4(currentPos, 1), cascadeWeights);
+                     float mapDepth = tex2D(_MyShadowMap, shadowCoord.xy).r;
+                     float shadowTerm = shadowCoord.z <= mapDepth ? 1.0 : 0.0;
 
-                    transmittance += stepDensity * stepSize;
+                    _fogColor.rgb += _LightColor0.rgb * shadowTerm * stepDensity * stepSize;
 
+                    transmittance *= exp(-stepDensity * stepSize);
                     currentPos += rayDir * stepSize;
                 }
 
-                _fogColor = _FogColor;
+
+                transmittance = saturate(transmittance);
+                transmittance = 1.0 - transmittance;
 
                 return transmittance;
             }
@@ -141,10 +122,12 @@ Shader "_MyShaders/Volumetric Fog"
                 float4 viewSpacePos = float4(ray * depth, 1);
                 float4 worldSpacePos = mul(unity_CameraToWorld, viewSpacePos);
 
-                float4 fogColor = _FogColor;
-                float transmittance = RaymarchingTransmittance(_WorldSpaceCameraPos, worldSpacePos, fogColor, viewSpacePos.z);
+                float4 finalFogColor = _FogColor;
+                float transmittance = RaymarchingTransmittance(_WorldSpaceCameraPos, worldSpacePos, finalFogColor, viewSpacePos.z);
 
-                return lerp(sceneColor, fogColor, transmittance);
+                //return transmittance;
+
+                return lerp(sceneColor, finalFogColor, transmittance);
             }
             ENDCG
         }
