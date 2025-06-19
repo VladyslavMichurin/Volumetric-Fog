@@ -65,19 +65,20 @@ Shader "_MyShaders/Volumetric Fog"
 
                 return ray;
             }
-            fixed4 getCascadeWeights(float _z)
+            fixed4 GetCascadeWeights(float _z)
             {
                 float4 zNear = float4(_z >= _LightSplitsNear); 
                 float4 zFar = float4(_z < _LightSplitsFar); 
                 return zNear * zFar; 
 			}
-            float4 getShadowCoord(float4 worldPos, float4 weights){
+            float4 GetShadowCoord(float4 _worldPos, float4 _weights)
+            {
 			    float3 shadowCoord = float3(0,0,0);
 			       
-			    shadowCoord += mul(unity_WorldToShadow[0], worldPos).xyz * weights[0];
-                shadowCoord += mul(unity_WorldToShadow[1], worldPos).xyz * weights[1];
-                shadowCoord += mul(unity_WorldToShadow[2], worldPos).xyz * weights[2];
-                shadowCoord += mul(unity_WorldToShadow[3], worldPos).xyz * weights[3];
+			    shadowCoord += mul(unity_WorldToShadow[0], _worldPos).xyz * _weights[0];
+                shadowCoord += mul(unity_WorldToShadow[1], _worldPos).xyz * _weights[1];
+                shadowCoord += mul(unity_WorldToShadow[2], _worldPos).xyz * _weights[2];
+                shadowCoord += mul(unity_WorldToShadow[3], _worldPos).xyz * _weights[3];
 			   
                 return float4(shadowCoord,1);            
 			} 
@@ -86,28 +87,24 @@ Shader "_MyShaders/Volumetric Fog"
                 float3 viewDir = _endPos - _startPos;
                 float rayLenght = length(viewDir);
                 float3 rayDir = normalize(viewDir);
-                float4 cascadeWeights = getCascadeWeights(_viewPosZ);
+
+                float4 cascadeWeights = GetCascadeWeights(_viewPosZ);
 
                 float transmittance = 1;
-                float stepDensity = _FogDensity / _RaymarchingSteps;
                 float stepSize = rayLenght / _RaymarchingSteps;
-                float3 currentPos = _startPos;            
-
+                float3 currentPos = _startPos; 
+                
                 for (int i = 0; i <= _RaymarchingSteps; i++)
                 {
-                     float4 shadowCoord = getShadowCoord(float4(currentPos, 1), cascadeWeights);
-                     float mapDepth = tex2D(_MyShadowMap, shadowCoord.xy).r;
-                     float shadowTerm = shadowCoord.z <= mapDepth ? 1.0 : 0.0;
+                    float4 shadowCoord = GetShadowCoord(float4(currentPos, 1), cascadeWeights);
+                    float mapDepth = tex2D(_MyShadowMap, shadowCoord.xy).r;
+                    float shadowTerm = shadowCoord.z <= mapDepth ? 1.0 : 0.0;
 
-                    _fogColor.rgb += _LightColor0.rgb * shadowTerm * stepDensity * stepSize;
+                    _fogColor.rgb += _LightColor0.rgb * shadowTerm * _FogDensity * stepSize;
 
-                    transmittance *= exp(-stepDensity * stepSize);
+                    transmittance *= exp(-_FogDensity * stepSize);
                     currentPos += rayDir * stepSize;
                 }
-
-
-                transmittance = saturate(transmittance);
-                transmittance = 1.0 - transmittance;
 
                 return transmittance;
             }
@@ -125,9 +122,7 @@ Shader "_MyShaders/Volumetric Fog"
                 float4 finalFogColor = _FogColor;
                 float transmittance = RaymarchingTransmittance(_WorldSpaceCameraPos, worldSpacePos, finalFogColor, viewSpacePos.z);
 
-                //return transmittance;
-
-                return lerp(sceneColor, finalFogColor, transmittance);
+                return lerp(sceneColor, finalFogColor, 1 - saturate(transmittance));
             }
             ENDCG
         }
